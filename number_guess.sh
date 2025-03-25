@@ -20,7 +20,13 @@ if [[ -z $USER_DATA ]]; then
 else
   # Returning user
   IFS="|" read USER_ID GAMES_PLAYED BEST_GAME <<< "$USER_DATA"
-  echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+
+  # Ensure best_game is displayed correctly
+  if [[ -z $BEST_GAME ]]; then
+    echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games."
+  else
+    echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+  fi
 fi
 
 # Start guessing game
@@ -49,7 +55,8 @@ while true; do
 done
 
 # Update user stats
+$PSQL "UPDATE users SET games_played = games_played + 1 WHERE user_id = $USER_ID"
+
 if [[ -z $BEST_GAME || $GUESSES -lt $BEST_GAME ]]; then
-  $PSQL "UPDATE users SET best_game=$GUESSES WHERE user_id=$USER_ID"
+  $PSQL "UPDATE users SET best_game = $GUESSES WHERE user_id = $USER_ID"
 fi
-$PSQL "UPDATE users SET games_played=games_played+1 WHERE user_id=$USER_ID"
