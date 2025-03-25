@@ -19,13 +19,13 @@ if [[ -z $USER_DATA ]]; then
   USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$USERNAME'")
 else
   # Returning user
-  IFS="|" read USER_ID GAMES_PLAYED BEST_GAME <<< "$USER_DATA"
+IFS="|" read USER_ID GAMES_PLAYED BEST_GAME <<< "$USER_DATA"
 
   # Ensure best_game is displayed correctly
   if [[ -z $BEST_GAME ]]; then
-    echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games."
-  else
-    echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+  echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game has not been recorded yet."
+else
+  echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
   fi
 fi
 
