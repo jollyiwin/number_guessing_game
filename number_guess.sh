@@ -15,7 +15,7 @@ USER_DATA=$($PSQL "SELECT user_id, games_played, best_game FROM users WHERE user
 if [[ -z $USER_DATA ]]; then
   # New user
   echo "Welcome, $USERNAME! It looks like this is your first time here."
-  $PSQL "INSERT INTO users(username, games_played, best_game) VALUES('$USERNAME', 0, NULL)"
+  $PSQL "INSERT INTO users(username, games_played, best_game) VALUES('$USERNAME', 1, NULL)"
   USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$USERNAME'")
 else
   # Returning user
@@ -57,6 +57,6 @@ done
 # Update user stats
 $PSQL "UPDATE users SET games_played = games_played + 1 WHERE user_id = $USER_ID"
 
-if [[ -z $BEST_GAME || $GUESSES -lt $BEST_GAME ]]; then
+if [[ -z $BEST_GAME || $BEST_GAME -eq 0 || $GUESSES -lt $BEST_GAME ]]; then
   $PSQL "UPDATE users SET best_game = $GUESSES WHERE user_id = $USER_ID"
 fi
