@@ -4,7 +4,7 @@
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 # Ensure the database exists
-$PSQL "CREATE TABLE IF NOT EXISTS users ( username VARCHAR(22) PRIMARY KEY, games_played INT DEFAULT 0, best_game INT DEFAULT NULL);"
+# $PSQL "CREATE TABLE IF NOT EXISTS users ( username VARCHAR(22) PRIMARY KEY, games_played INT DEFAULT 0, best_game INT DEFAULT NULL);"
 
 # Generate a random number
 SECRET_NUMBER=$((RANDOM % 1000 + 1))
@@ -35,6 +35,8 @@ while true; do
     echo "That is not an integer, guess again:"
     continue
   fi
+  break
+done
 
   if (( GUESS < SECRET_NUMBER )); then
     echo "It's higher than that, guess again:"
