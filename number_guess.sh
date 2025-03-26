@@ -48,4 +48,4 @@ done
 
 # Update database
 $PSQL "UPDATE users SET games_played = games_played + 1 WHERE username='$USERNAME'"
-$PSQL "UPDATE users SET best_game = LEAST(best_game, $GUESSES) WHERE username='$USERNAME'"
+$PSQL "UPDATE users SET best_game = LEAST(COALESCE(best_game, $GUESSES), $GUESSES) WHERE username='$USERNAME'"
