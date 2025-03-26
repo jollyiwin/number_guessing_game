@@ -4,7 +4,11 @@
 PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 # Ensure the database exists
-# $PSQL "CREATE TABLE IF NOT EXISTS users ( username VARCHAR(22) PRIMARY KEY, games_played INT DEFAULT 0, best_game INT DEFAULT NULL);"
+$PSQL "CREATE TABLE IF NOT EXISTS users(
+  username VARCHAR(22) PRIMARY KEY, 
+  games_played INT DEFAULT 0, 
+  best_game INT DEFAULT NULL
+);"
 
 # Generate a random number
 SECRET_NUMBER=$((RANDOM % 1000 + 1))
@@ -16,11 +20,14 @@ read USERNAME
 # Fetch user data
 USER_DATA=$($PSQL "SELECT games_played, best_game FROM users WHERE username='$USERNAME'")
 
-if [[ -z $USER_DATA ]]; then
+if [[ -z "$USER_DATA" ]]; then
   echo "Welcome, $USERNAME! It looks like this is your first time here."
-  $PSQL "INSERT INTO users(username) VALUES('$USERNAME')"
+  $PSQL "INSERT INTO users(username, games_played, best_game) VALUES('$USERNAME', 0, NULL)"
 else
-  IFS='|' read -r GAMES_PLAYED BEST_GAME <<< "$USER_DATA"
+  IFS=' |' read -r GAMES_PLAYED BEST_GAME <<< "$USER_DATA"
+  if [[ -z "$BEST_GAME" ]]; then
+    BEST_GAME="N/A"
+  fi
   echo "Welcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
@@ -35,8 +42,6 @@ while true; do
     echo "That is not an integer, guess again:"
     continue
   fi
-  break
-done
 
   if (( GUESS < SECRET_NUMBER )); then
     echo "It's higher than that, guess again:"
